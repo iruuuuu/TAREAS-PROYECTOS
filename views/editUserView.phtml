@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Usuario</title>
+    <link rel="stylesheet" href="public/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Panel de usuario</h1>
+
+        <p>Hola, <strong><?= $_SESSION['user']->getUsername() ?></strong>.</p>
+
+        <?php if ($_SESSION['user']->getAvatar()) {
+            $img = $_SESSION['user']->getAvatar();
+        } else $img = "avatar.jpg";
+
+        echo '<img src="/proyectos/public/img/' . $img . '" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 20px;">';
+        ?>
+
+        <form action="index.php?c=user&setAvatar=1" method="post" enctype="multipart/form-data">
+            <h4>Edita tu avatar</h4>
+            <input type="file" name="avatar">
+            <input type="submit" value="Subir">
+        </form>
+        <br>
+        <a href="index.php">Volver a Proyectos</a>
+    </div>
+</body>
+
+</html>

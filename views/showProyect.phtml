@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto: <?= $proyect->getName() ?></title>
+    <link rel="stylesheet" href="public/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="user-bar">
+            <div class="user-info">
+                <?php if ($_SESSION['user']->getAvatar()) {
+                    $img = $_SESSION['user']->getAvatar();
+                } else $img = "avatar.jpg";
+                echo '<img src="/proyectos/public/img/' . $img . '" alt="Avatar">';
+                ?>
+                <span>Hola, <strong><?= $_SESSION['user']->getUsername() ?></strong></span>
+            </div>
+            <div class="user-actions">
+                <a href="index.php">Volver a Proyectos</a>
+                <a href="index.php?c=user&logout=1">Logout</a>
+            </div>
+        </div>
+
+        <!-- Mostramos el nombre y la descripción del proyecto -->
+        <h2><?= $proyect->getName() ?></h2>
+        <p><?= nl2br($proyect->getDescription()) ?></p>
+        <small>Creado el: <?= $proyect->getDatetime() ?></small>
+        <hr>
+
+        <h3>Tareas del Proyecto</h3>
+
+        <?php if (empty($tasks)): ?>
+            <p>Este proyecto aún no tiene tareas.</p>
+        <?php else: ?>
+            <ul class="item-list">
+                <?php foreach ($tasks as $task): ?>
+                    <li>
+                        <span>
+                            <strong><?= $task->getName() ?>:</strong>
+                            <?= $task->getDescription() ?>
+                            <small>(Creado el: <?= $task->getDatetime() ?>)</small>
+                        </span>
+                        <?php if ($_SESSION['user']->getRoles() == 'admin') : ?>
+                            <a class="delete-link" href="index.php?c=task&delete=<?= $task->getId() ?>&projectId=<?= $proyect->getId() ?>">Eliminar</a>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+
+        <?php if ($_SESSION['user']->getRoles() == 'admin') : ?>
+            <form action="index.php?c=task" method="POST">
+                <h4>Añadir una nueva tarea</h4>
+                <input type="hidden" name="projectId" value="<?= $proyect->getId() ?>">
+                <input type="text" name="name" placeholder="Nombre de la tarea" required>
+                <textarea name="description" placeholder="Descripción de la tarea" required></textarea>
+                <input type="submit" value="Añadir Tarea">
+            </form>
+        <?php endif; ?>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Proyectos</title>
+    <link rel="stylesheet" href="public/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="user-bar">
+            <div class="user-info">
+                <?php if ($_SESSION['user']->getAvatar()) {
+                    $img = $_SESSION['user']->getAvatar();
+                } else $img = "avatar.jpg";
+                echo '<img src="/proyectos/public/img/' . $img . '" alt="Avatar">';
+                ?>
+                <span>Hola, <strong><?= $_SESSION['user']->getUsername() ?></strong></span>
+            </div>
+            <div class="user-actions">
+                <a href="index.php?c=user&edit=1">Panel de usuario</a>
+                <a href="index.php?c=user&logout=1">Logout</a>
+            </div>
+        </div>
+
+        <h2>Mis Proyectos</h2>
+        <ul class="item-list">
+            <?php foreach ($proyects as $proyect) : ?>
+                <li>
+                    <a href="index.php?c=proyect&id=<?= $proyect->getId() ?>"><?= $proyect->getName() ?></a>
+                    <?php if ($_SESSION['user']->getRoles() == 'admin') : ?>
+                        <a class="delete-link" href="index.php?c=proyect&delete=<?= $proyect->getId() ?>">Eliminar Proyecto</a>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+
+        <?php if ($_SESSION['user']->getRoles() == 'admin') : ?>
+            <form action="index.php?c=proyect" method="POST">
+                <h4>Crear Nuevo Proyecto</h4>
+                <input type="text" name="name" placeholder="Nombre del proyecto" required>
+                <textarea name="description" placeholder="Descripción del proyecto" required></textarea>
+                <input type="submit" value="Crear Proyecto">
+            </form>
+        <?php endif; ?>
+    </div>
+</body>
+
+</html>
